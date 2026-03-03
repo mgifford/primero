@@ -5,7 +5,7 @@ import { cx } from "@emotion/css";
 import { useMediaQuery } from "@mui/material";
 
 import ModuleLogo from "../../../module-logo";
-import AgencyLogo from "../../../agency-logo";
+import WelcomeMessage from "../../../welcome-message";
 import Notifier from "../../../notifier";
 import DemoIndicator from "../../../demo-indicator";
 import { useMemoizedSelector } from "../../../../libs";
@@ -45,7 +45,7 @@ function Component({ children }) {
                 <div className={css.form}>{children}</div>
               </div>
               <div className={classesLoginLogo}>
-                <AgencyLogo alwaysFullLogo />
+                <WelcomeMessage />
               </div>
             </div>
             {isContainedAndMobile && <LoginLayoutFooter useContainedNavStyle />}
