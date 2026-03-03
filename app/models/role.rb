@@ -307,7 +307,12 @@ class Role < ApplicationRecord
 
   def update_properties(role_properties)
     role_properties = role_properties.with_indifferent_access if role_properties.is_a?(Hash)
-    assign_attributes(role_properties.except('permissions', 'form_section_read_write', 'module_unique_ids'))
+    if role_properties['modules'].present? && role_properties['module_unique_ids'].blank?
+      role_properties['module_unique_ids'] = role_properties['modules'].map do |mod|
+        mod.respond_to?(:unique_id) ? mod.unique_id : mod
+      end
+    end
+    assign_attributes(role_properties.except('permissions', 'form_section_read_write', 'module_unique_ids', 'modules'))
     update_forms_sections(role_properties['form_section_read_write'])
     update_permissions(role_properties['permissions'])
     update_modules(role_properties['module_unique_ids'])

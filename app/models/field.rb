@@ -46,6 +46,15 @@ class Field < ApplicationRecord
   belongs_to :collapsed_field_for_subform, foreign_key: 'collapsed_field_for_subform_section_id',
                                            class_name: 'FormSection', optional: true
 
+  # Backward-compatible accessor for configuration seed files using subform_section
+  def subform_section
+    subform
+  end
+
+  def subform_section=(section)
+    self.subform = section
+  end
+
   attr_readonly :name, :type, :multi_select
 
   scope :binary, lambda {

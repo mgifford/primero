@@ -22,6 +22,21 @@ On macOS, install git with Homebrew:
 brew install git
 ```
 
+## Choose a Development Path
+
+> [!NOTE]
+> Primero supports two development approaches. Choose one and follow only that path.
+
+- **Option A: Local Development (Hybrid)**
+    - Ruby + Node run locally
+    - PostgreSQL + Solr run in Docker
+    - Recommended for faster iteration and better IDE support
+- **Option B: Full Docker (All Services + App in Containers)**
+    - Everything runs in Docker containers
+    - Useful if local Ruby/Node setup is difficult
+
+---
+
 Navigate to a directory in your shell where you would like to download Primero, and clone the repository.
 
 ```bash
@@ -83,6 +98,8 @@ If you want to use the debugging features of VSCode for Ruby, you can add the fo
     ]
 }
 ```
+## Option A: Local Development (Hybrid)
+
 # Installing Dependencies
 ## Installing Ruby using `rbenv`
 
@@ -164,7 +181,7 @@ To install the version of node needed by primero, run the following command:
 ```shell
 nvm install --lts
 ```
-## Installing Docker and docker-compose
+## Installing Docker and docker-compose (Services Only)
 
 > [!NOTE]
 > If you already have docker and docker-compose, skip this step.
@@ -216,6 +233,35 @@ sudo ./compose.local.sh up -d solr
 
 For detailed Docker setup instructions, see the [Docker README](docker/README.md).
 
+## Option B: Full Docker (All Services + App in Containers)
+
+If you prefer not to install Ruby and Node locally, use the full Docker approach:
+
+1. Follow the Docker guide in [docker/README.md](../../docker/README.md).
+2. Build images and start services from the `docker` directory:
+
+```bash
+cd docker
+./build.sh all
+cp local.env.sample.development local.env
+./compose.local.sh up -d
+```
+
+3. Run Rails or Node commands inside the app container:
+
+```bash
+./compose.local.sh run app rails db:create
+./compose.local.sh run app rails db:migrate
+./compose.local.sh run app rails db:seed
+./compose.local.sh run app -e RAILS_ENV=test rails db:migrate
+./compose.local.sh run app rails primero:i18n_js
+
+./compose.local.sh run app npm ci
+./compose.local.sh run app npm run dev
+```
+
+If you choose this option, skip the local Ruby/Node installation steps above.
+
 # Configuring Primero for Local Development
 
 Primero is partially configured with a number of yaml files. There are example versions of these files provided for local development. They need to be copied to the correct locations in order for Primero to function.
@@ -246,6 +292,8 @@ On macOS, install equivalent dependencies with Homebrew:
 brew install postgresql libvips libsodium p7zip
 ```
 
+> **Note:** On macOS, you only need to install these libraries if you're following the **local development path**. If using full Docker (see section above), skip this step.
+
 Note that versions of Primero previous to v2.15.0 used `imagemagick` instead of `libvips42` for image processing. If you wish to maintain older versions, you will need to install it.
 
 ```bash
@@ -275,11 +323,21 @@ rails db:seed
 RAILS_ENV=test rails db:migrate
 ```
 
+> **Note:** If you're using the **full Docker approach** (from the alternative above), run these commands prefixed with `docker-compose run app`:
+> ```bash
+> docker-compose run app rails db:create
+> docker-compose run app rails db:migrate
+> docker-compose run app rails db:seed
+> docker-compose run app -e RAILS_ENV=test rails db:migrate
+> ```
+
 You also need to generate the translation files.
 
 ```shell
 rails primero:i18n_js
 ```
+
+> **Note:** If using Docker, run: `docker-compose run app rails primero:i18n_js`
 
 Finally, you need to set a number of environment variables which contain necessary secrets.
 
