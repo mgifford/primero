@@ -76,6 +76,20 @@ export default theme => ({
           }
         }
       }
+    },
+    MUIDataTableHeadCell: {
+      styleOverrides: {
+        sortAction: {
+          // Fix accessibility: Hide nested interactive element from screen readers
+          // The outer button already has proper aria-label and sort functionality
+          "& .MuiTableSortLabel-root": {
+            // Hide the inner span that creates nested interactive controls
+            "& > span[role='button']": {
+              display: "none !important"
+            }
+          }
+        }
+      }
     }
   }
 });
