@@ -87,3 +87,13 @@ configuration_translation_export*
 /ansible/inventory/inventory.yml
 /ansible/roles/application-primero/files/local.env
 /ansible/secrets.yml
+# Accessibility testing
+.env.local
+.env.test
+accessibility-reports/
+.pa11yci.json
+eslint-report.json
+.pre-commit-config.local.yaml
+
+# Pre-commit and linting
+.pre-commit-config.yaml.bak

@@ -1,0 +1,26 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
+
+  - repo: local
+    hooks:
+      - id: accessibility-lint
+        name: Run accessibility linting (ESLint)
+        entry: bash -lc 'npm run lint:a11y'
+        language: system
+        types: [javascript, jsx]
+        pass_filenames: false
+        stages: [pre-commit]
+
+      - id: prettier
+        name: Prettier code formatter
+        entry: npx prettier --write
+        language: system
+        types: [javascript, jsx, json, css, markdown]
+        pass_filenames: true
+        stages: [pre-commit]

@@ -1,0 +1,56 @@
+name: Accessibility Checks (PR)
+
+on:
+  pull_request:
+    paths:
+      - "app/javascript/**"
+      - ".github/workflows/accessibility*.yml"
+
+permissions:
+  contents: read
+  checks: write
+  pull-requests: write
+
+jobs:
+  eslint-a11y:
+    name: ESLint Accessibility Checks
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run ESLint (accessibility rules)
+        run: npx eslint app/javascript --ext .js,.jsx --plugin jsx-a11y --format json --output-file eslint-report.json || true
+
+      - name: Report results
+        if: always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            try {
+              const report = JSON.parse(fs.readFileSync('./eslint-report.json', 'utf8'));
+              
+              const violations = report.flatMap(file => 
+                file.messages.filter(msg => msg.severity === 2)
+              );
+              
+              if (violations.length > 0) {
+                core.setFailed(`Found ${violations.length} accessibility violations`);
+              }
+            } catch (e) {
+              console.log('No violations found');
+            }

@@ -1,0 +1,74 @@
+name: Accessibility Scan (Scheduled)
+
+on:
+  schedule:
+    - cron: "0 6 * * 1"  # Monday at 06:00 UTC
+  workflow_dispatch:    # Allow manual trigger
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  accessibility-scan:
+    name: Primero Accessibility Scan
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Create .env file
+        run: |
+          echo "PRIMERO_USERNAME=${{ secrets.ACCESSIBILITY_USERNAME }}" > .env.local
+          echo "PRIMERO_PASSWORD=${{ secrets.ACCESSIBILITY_PASSWORD }}" >> .env.local
+          echo "ACCESSIBILITY_BASE_URL=${{ vars.ACCESSIBILITY_SCAN_URL }}" >> .env.local
+          echo "ACCESSIBILITY_REPORT_DIR=./accessibility-reports" >> .env.local
+
+      - name: Wait for application
+        run: |
+          timeout 120 bash -c 'until curl -s ${{ vars.ACCESSIBILITY_SCAN_URL }}/login | grep -q "login"; do sleep 5; done'
+        continue-on-error: true
+
+      - name: Run accessibility scan
+        run: node scripts/accessibility-scan-playwright.js
+
+      - name: Upload accessibility reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-reports
+          path: accessibility-reports/
+          retention-days: 30
+
+      - name: Create accessibility issue
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const reportFiles = fs.readdirSync('./accessibility-reports').filter(f => f.endsWith('.json'));
+            
+            if (reportFiles.length === 0) return;
+            
+            const report = JSON.parse(fs.readFileSync(`./accessibility-reports/${reportFiles[0]}`, 'utf8'));
+            const violations = report.summary.violations;
+            
+            if (violations > 0) {
+              github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Accessibility Issues Found: ${violations} violations`,
+                body: `Scheduled accessibility scan found **${violations}** violations.\n\nSee artifacts for detailed report.`,
+                labels: ['accessibility', 'a11y']
+              });
+            }

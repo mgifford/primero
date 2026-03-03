@@ -19,7 +19,9 @@
     "jscpd": "npm run jscpd:run 'app/javascript/**'",
     "jscpd:run": "jscpd",
     "lint": "npm run lint:run -- --fix",
-    "lint:run": "eslint './app/javascript/**'"
+    "lint:run": "eslint './app/javascript/**'",
+    "lint:a11y": "eslint './app/javascript/**' --plugin jsx-a11y --global-rule jsx-a11y",
+    "test:a11y:changed": "echo 'Accessibility testing for changed files' && npm run lint:a11y"
   },
   "overrides": {
     "minimist": "1.2.7",
@@ -39,6 +41,7 @@
     "@emotion/styled": "11.11.4"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.1",
     "@azure/msal-browser": "^3.17.0",
     "@babel/core": "~7.28.4",
     "@babel/eslint-parser": "^7.28.4",
@@ -89,6 +92,7 @@
     "deepmerge": "^4.3.1",
     "dom-to-image-more": "2.8.0",
     "dompurify": "^3.2.7",
+    "dotenv": "^17.3.1",
     "eslint": "^8.11.0",
     "eslint-config-airbnb": "~19.0.4",
     "eslint-config-prettier": "~8.5.0",
@@ -127,6 +131,7 @@
     "normalizr": "^3.6.2",
     "notistack": "^2.0.8",
     "nyc": "^17.1.0",
+    "playwright": "^1.58.2",
     "postcss-flexbugs-fixes": "^5.0.2",
     "postcss-import": "^16.1.1",
     "postcss-loader": "^8.2.0",
