@@ -132,7 +132,7 @@ function Nav() {
       </div>
       <List className={navListClasses}>{permittedMenuEntries(APPLICATION_NAV(permissions, userId))}</List>
       <div className={css.navAgencies}>
-        <AgencyLogo />
+        <AgencyLogo excludeIds={["UNICEF"]} />
       </div>
       <div className={translationsToggleClass}>
         <TranslationsToggle />

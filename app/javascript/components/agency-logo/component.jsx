@@ -9,11 +9,11 @@ import useMemoizedSelector from "../../libs/use-memoized-selector";
 
 import css from "./styles.css";
 
-function AgencyLogo({ alwaysFullLogo = false }) {
+function AgencyLogo({ alwaysFullLogo = false, excludeIds = [] }) {
   const agencyLogos = useMemoizedSelector(state => getAgencyLogos(state));
 
   const renderLogos = () => {
-    return agencyLogos.map(agency => {
+    return agencyLogos.filter(agency => !excludeIds.includes(agency.get("unique_id"))).map(agency => {
       const uniqueId = agency.get("unique_id");
       const styleIcon = { backgroundImage: `url(${agency.get("logo_icon")})` };
       const styleFull = { backgroundImage: `url(${agency.get("logo_full")})` };
@@ -43,7 +43,8 @@ function AgencyLogo({ alwaysFullLogo = false }) {
 AgencyLogo.displayName = "AgencyLogo";
 
 AgencyLogo.propTypes = {
-  alwaysFullLogo: PropTypes.bool
+  alwaysFullLogo: PropTypes.bool,
+  excludeIds: PropTypes.array
 };
 
 export default memo(AgencyLogo);
