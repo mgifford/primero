@@ -163,6 +163,11 @@ const components = {
         }
       },
       input: {
+        color: "var(--c-black)",
+        "&::placeholder": {
+          color: "var(--c-dark-grey)",
+          opacity: 1
+        },
         "&.Mui-disabled": {
           color: "var(--c-black)",
           cursor: "not-allowed !important",
