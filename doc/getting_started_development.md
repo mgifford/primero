@@ -16,6 +16,12 @@ sudo apt update
 sudo apt install git
 ```
 
+On macOS, install git with Homebrew:
+
+```bash
+brew install git
+```
+
 Navigate to a directory in your shell where you would like to download Primero, and clone the repository.
 
 ```bash
@@ -94,17 +100,32 @@ In order to install ruby using `rbenv`, you will need to install the following d
 sudo apt install curl g++ gnupg2 gcc autoconf automake bison libc6-dev libffi-dev libgdbm-dev libncurses5-dev libsqlite3-dev libtool libyaml-dev make pkg-config sqlite3 zlib1g-dev libgmp-dev  libreadline-dev libssl-dev
 ```
 
+If you are using macOS, use Homebrew rather than `apt`.
+
+```bash
+xcode-select --install
+brew install rbenv ruby-build openssl@3 readline libyaml gmp autoconf automake libtool pkg-config libffi sqlite3
+```
+
 You will then need to install `rbenv` as well as `ruby-build`. There is a convenience script provided by `rbenv` that will help to install them.
 
 ```bash
 curl -fsSL https://github.com/rbenv/rbenv-installer/raw/HEAD/bin/rbenv-installer | bash
 ```
 
+On macOS, if you used Homebrew above, you can skip the installer script because `rbenv` and `ruby-build` are already installed.
+
 The convenience script does not modify your `.bashrc` file. You need to update it manually with the snippet below. If you use another shell such as zsh, you will need to edit the correct startup file.
 
 ```bash
 echo 'export PATH="$PATH:~/.rbenv/bin"' >> ~/.bashrc
 echo 'eval "$(rbenv init -)"' >> ~/.bashrc
+```
+
+For the default macOS zsh shell, use:
+
+```bash
+echo 'eval "$(rbenv init - zsh)"' >> ~/.zshrc
 ```
 
 In the Primero top-level directory, there is a file `.ruby-version`, which contains the correct version of ruby to install. Install the correct version as follows:
@@ -154,6 +175,14 @@ Install docker using [apt](https://docs.docker.com/engine/install/ubuntu/#instal
 ```bash
 sudo apt install docker.io docker-compose-plugin
 ```
+
+On macOS, install Docker Desktop using Homebrew:
+
+```bash
+brew install --cask docker
+```
+
+Then start Docker Desktop once to complete setup and initialize the Docker engine.
 ## Building the Containers
 
 ```bash
@@ -211,10 +240,22 @@ You will also need to install some system-wide dependencies required to build an
 sudo apt install libpq-dev libvips42 libsodium-dev p7zip
 ```
 
+On macOS, install equivalent dependencies with Homebrew:
+
+```bash
+brew install postgresql libvips libsodium p7zip
+```
+
 Note that versions of Primero previous to v2.15.0 used `imagemagick` instead of `libvips42` for image processing. If you wish to maintain older versions, you will need to install it.
 
 ```bash
 sudo apt install imagemagick
+```
+
+On macOS:
+
+```bash
+brew install imagemagick
 ```
 
 Execute the following to install Primero's ruby and node dependencies:
@@ -252,6 +293,14 @@ The following bash command will generate a secure secret for each of these and a
 ```bash
 for v in PRIMERO_SECRET_KEY_BASE DEVISE_SECRET_KEY DEVISE_JWT_SECRET_KEY;
 do echo "export ${v}=$(openssl rand -hex 16)" >> ~/.bashrc;
+done;
+```
+
+For zsh on macOS, write them to `~/.zshrc` instead:
+
+```bash
+for v in PRIMERO_SECRET_KEY_BASE DEVISE_SECRET_KEY DEVISE_JWT_SECRET_KEY;
+do echo "export ${v}=$(openssl rand -hex 16)" >> ~/.zshrc;
 done;
 ```
 
