@@ -14,7 +14,7 @@
 .welcomeHeading {
   font-size: 1.75rem;
   font-weight: 500;
-  color: var(--c-primary);
+  color: var(--c-black);
   margin: 0 0 0.5rem 0;
   font-family: SourceSansPro, sans-serif;
 }
@@ -22,7 +22,7 @@
 .welcomeText {
   font-size: 1rem;
   line-height: 1.5;
-  color: var(--c-text-secondary, #666);
+  color: var(--c-dark-grey);
   margin: 0;
   max-width: 400px;
 }
