@@ -1,0 +1,25 @@
+# Copyright (c) 2014 - 2023 UNICEF. All rights reserved.
+
+name: Accessibility Scanner
+on:
+  workflow_run:
+    workflows: ["App"]
+    types:
+      - completed
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  accessibility_scanner:
+    runs-on: ubuntu-latest
+    permissions: {}
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - uses: github/accessibility-scanner@v2
+        with:
+          urls: |
+            https://www.primero.org
+          repository: mgifford/primero
+          token: ${{ secrets.GH_TOKEN }}
+          cache_key: primero
