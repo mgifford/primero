@@ -35,6 +35,7 @@ function TextInput({ commonInputProps, metaInputProps = {}, formMethods }) {
   };
 
   const renderLabel = label ? <InputLabel tooltip={tooltip} text={label} /> : null;
+  const ariaLabel = typeof label === "string" ? label : undefined;
 
   return (
     <Controller
@@ -42,7 +43,7 @@ function TextInput({ commonInputProps, metaInputProps = {}, formMethods }) {
       type={inputType}
       as={TextField}
       label={renderLabel}
-      aria-label={renderLabel}
+      aria-label={ariaLabel}
       {...rest}
       {...(isEmpty(inputProps) ? {} : { inputProps })}
       helperText={
