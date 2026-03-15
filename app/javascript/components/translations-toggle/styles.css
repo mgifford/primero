@@ -3,7 +3,7 @@
 .button {
   display: flex;
   justify-content: initial;
-  color: var(--c-dark-grey);
+  color: var(--c-black);
   padding: 0 16px;
   background-color: white;
 
