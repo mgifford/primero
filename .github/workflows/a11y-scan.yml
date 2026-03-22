@@ -13,7 +13,9 @@ on:
 jobs:
   accessibility_scanner:
     runs-on: ubuntu-latest
-    permissions: {}
+    permissions:
+      issues: write
+      pull-requests: write
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
     steps:
       - uses: github/accessibility-scanner@v2
@@ -21,5 +23,5 @@ jobs:
           urls: |
             https://www.primero.org
           repository: mgifford/primero
-          token: ${{ secrets.GH_TOKEN }}
+          token: ${{ github.token }}
           cache_key: primero
